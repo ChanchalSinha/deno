@@ -1,25 +1,20 @@
-import { Client } from "https://deno.land/x/mysql/mod.ts";
-import { Application } from "https://deno.land/x/oak/mod.ts";
-import { config } from "https://deno.land/x/dotenv/mod.ts";
-import { Router, RouterContext } from "https://deno.land/x/oak/mod.ts";
+import { serve } from "https://deno.land/std/http/server.ts";
+import * as flags from "https://deno.land/std/flags/mod.ts";
 
-const app= new Application();
+const { args, exit } = Deno;
+const DEFAULT_PORT = 8080;
+const argPort = flags.parse(args).port;
+const port = argPort ? Number(argPort) : DEFAULT_PORT;
 
-const env = config();
-const HOST = env.APP_HOST || "http://localhost";
-const PORT = +env.APP_PORT || 4000;
+if (isNaN(port)) {
+  console.log("port is not number");
+  exit(1);
+}
 
-console.log(HOST, PORT);
+const body = new TextEncoder().encode("Hello World\n");
+const s = serve({ port });
+console.log(`http://localhost:${port}`);
 
-const router = new Router();
-
-router.get("/", (ctx: RouterContext) => {
-  console.log(ctx.response.body = "Hello World..!!");
-});
-
-app.use(router.routes());
-
-console.log(`server is started and listening at port :${PORT}`);
-
-await app.listen({port:PORT});
-
+for await (const req of s) {
+  req.respond({ body });
+}
