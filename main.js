@@ -25003,10 +25003,14 @@ System.register("file:///D:/DemoApp/demo/denoS/config/databases", ["file:///D:/D
         execute: async function () {
             env = deps_ts_22.config();
             client = await new deps_ts_22.Client().connect({
-                hostname: "127.0.0.1",
-                username: "root",
-                password: "mySql@8",
-                db: "demo",
+                // hostname: "127.0.0.1",
+                // username: "root",
+                // password: "mySql@8",
+                // db: "demo",
+                hostname: env.APP_DB_HOSTNAME,
+                username: env.APP_DB_USERNAME,
+                password: env.APP_DB_PASSWORD,
+                db: env.APP_DB_DATABASE,
             });
             exports_112("default", client);
         }
